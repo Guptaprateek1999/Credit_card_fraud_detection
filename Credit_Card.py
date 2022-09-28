@@ -114,7 +114,7 @@ test.reset_index(drop=True, inplace=True)
 no_of_frauds = train.Class.value_counts()[1]
 print('There are {} fraud transactions in the train set'.format(no_of_frauds))
 
-#randomly selecting 442 random non-fraud transactions
+#randomly selecting 77 random non-fraud transactions
 non_fraud = train[train['Class'] == 0]
 fraud = train[train['Class'] == 1]
 
@@ -242,6 +242,8 @@ for name, model in models:
     msg = '%s: %f (%f)' % (name, cv_results.mean(), cv_results.std())
     print(msg)
 
+from sklearn import tree
+import matplotlib.pyplot as plt
 #visualizing RF
 model = RandomForestClassifier(n_estimators=10)
 
@@ -249,19 +251,5 @@ model = RandomForestClassifier(n_estimators=10)
 model.fit(X_train, y_train)
 # Extract single tree
 estimator = model.estimators_[5]
-
-from sklearn.tree import export_graphviz
-# Export as dot file
-export_graphviz(estimator, out_file='tree.dot', 
-                feature_names = X.columns.tolist(),
-                class_names = ['0',' 1'],
-                rounded = True, proportion = False, 
-                precision = 2, filled = True)
-
-# Convert to png using system command (requires Graphviz)
-from subprocess import call
-call(['dot', '-Tpng', 'tree.dot', '-o', 'tree.png', '-Gdpi=600'])
-
-# Display in jupyter notebook
-from IPython.display import Image
-Image(filename = 'tree.png')
+plt.figure(figsize=(15,10))
+tree.plot_tree(estimator,filled=True)
